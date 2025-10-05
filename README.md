@@ -13,7 +13,7 @@ The project integrates **MLflow**, **Airflow**, and **Kubeflow Pipelines** for a
 - Deployed as a microservice (**FastAPI**) with Kubernetes manifests
 
 ## 📊 Architecture
-![Pipeline Architecture](docs/pipeline-architecture.png)
+![Pipeline Architecture](docs/pipeline-architecture.jpg)
 
 ## 🧩 Tech Stack
 Python, MLflow, Airflow, Kubeflow, XGBoost, SHAP, EvidentlyAI, Docker, Kubernetes
