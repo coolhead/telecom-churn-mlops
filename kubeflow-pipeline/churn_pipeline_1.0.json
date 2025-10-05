@@ -1,0 +1,629 @@
+{
+  "components": {
+    "comp-decide-promotion": {
+      "executorLabel": "exec-decide-promotion",
+      "inputDefinitions": {
+        "parameters": {
+          "auc_value": {
+            "parameterType": "NUMBER_DOUBLE"
+          },
+          "threshold": {
+            "parameterType": "NUMBER_DOUBLE"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "parameters": {
+          "Output": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    },
+    "comp-evaluate-model": {
+      "executorLabel": "exec-evaluate-model",
+      "inputDefinitions": {
+        "artifacts": {
+          "X_val_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "model_in": {
+            "artifactType": {
+              "schemaTitle": "system.Model",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "y_val_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        },
+        "parameters": {
+          "aws_access_key_id": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "aws_secret_access_key": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "mlflow_tracking_uri": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "s3_endpoint": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "eval_metrics": {
+            "artifactType": {
+              "schemaTitle": "system.Metrics",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        },
+        "parameters": {
+          "auc_value": {
+            "parameterType": "NUMBER_DOUBLE"
+          }
+        }
+      }
+    },
+    "comp-ingest-synthetic": {
+      "executorLabel": "exec-ingest-synthetic",
+      "inputDefinitions": {
+        "parameters": {
+          "aws_access_key_id": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "aws_secret_access_key": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "class_sep": {
+            "defaultValue": 1.2,
+            "isOptional": true,
+            "parameterType": "NUMBER_DOUBLE"
+          },
+          "mlflow_tracking_uri": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "n_features": {
+            "defaultValue": 20.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_INTEGER"
+          },
+          "n_informative": {
+            "defaultValue": 8.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_INTEGER"
+          },
+          "n_samples": {
+            "defaultValue": 3000.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_INTEGER"
+          },
+          "random_state": {
+            "defaultValue": 42.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_INTEGER"
+          },
+          "s3_endpoint": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "output_dataset": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        }
+      }
+    },
+    "comp-preprocess-split": {
+      "executorLabel": "exec-preprocess-split",
+      "inputDefinitions": {
+        "artifacts": {
+          "raw_dataset": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        },
+        "parameters": {
+          "aws_access_key_id": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "aws_secret_access_key": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "mlflow_tracking_uri": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "random_state": {
+            "defaultValue": 42.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_INTEGER"
+          },
+          "s3_endpoint": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "test_size": {
+            "defaultValue": 0.2,
+            "isOptional": true,
+            "parameterType": "NUMBER_DOUBLE"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "X_train_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "X_val_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "y_train_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "y_val_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        }
+      }
+    },
+    "comp-train-model": {
+      "executorLabel": "exec-train-model",
+      "inputDefinitions": {
+        "artifacts": {
+          "X_train_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "y_train_ds": {
+            "artifactType": {
+              "schemaTitle": "system.Dataset",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        },
+        "parameters": {
+          "C": {
+            "defaultValue": 1.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_DOUBLE"
+          },
+          "aws_access_key_id": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "aws_secret_access_key": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "max_iter": {
+            "defaultValue": 500.0,
+            "isOptional": true,
+            "parameterType": "NUMBER_INTEGER"
+          },
+          "mlflow_tracking_uri": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "penalty": {
+            "defaultValue": "l2",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "registered_model_name": {
+            "defaultValue": "churn-sklearn",
+            "isOptional": true,
+            "parameterType": "STRING"
+          },
+          "s3_endpoint": {
+            "defaultValue": "",
+            "isOptional": true,
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "model_out": {
+            "artifactType": {
+              "schemaTitle": "system.Model",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "train_metrics": {
+            "artifactType": {
+              "schemaTitle": "system.Metrics",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        }
+      }
+    }
+  },
+  "deploymentSpec": {
+    "executors": {
+      "exec-decide-promotion": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "decide_promotion"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.3' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef decide_promotion(auc_value: float, threshold: float) -> str:\n    msg = (\n        f\"AUC {auc_value:.3f} >= threshold {threshold:.3f} \u2192 \u2705 ready to promote.\"\n        if auc_value >= threshold\n        else f\"AUC {auc_value:.3f} < threshold {threshold:.3f} \u2192 \u274c hold promotion.\"\n    )\n    print(msg)\n    return msg\n\n"
+          ],
+          "image": "python:3.10-slim"
+        }
+      },
+      "exec-evaluate-model": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "evaluate_model"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'numpy==1.26.4' 'scikit-learn==1.4.2' 'mlflow==2.14.1' 'joblib==1.3.2' 'boto3==1.34.162'  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.3' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef evaluate_model(\n    model_in: Input[Model],\n    X_val_ds: Input[Dataset],\n    y_val_ds: Input[Dataset],\n    eval_metrics: Output[Metrics],\n    auc_value: OutputPath(float),\n    mlflow_tracking_uri: str = \"\",\n    s3_endpoint: str = \"\",\n    aws_access_key_id: str = \"\",\n    aws_secret_access_key: str = \"\",\n):\n    import json, joblib, mlflow\n    import pandas as pd\n    from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score, accuracy_score\n\n    def _setup_env(tracking, s3, key, secret, region=\"us-east-1\"):\n        import os\n        def clean(v): return v.strip() if isinstance(v, str) else v\n        tracking, s3, key, secret = map(clean, (tracking, s3, key, secret))\n        if tracking: os.environ[\"MLFLOW_TRACKING_URI\"] = tracking\n        if s3:\n            os.environ[\"MLFLOW_S3_ENDPOINT_URL\"] = s3\n            os.environ[\"AWS_ENDPOINT_URL_S3\"] = s3\n        if key:    os.environ[\"AWS_ACCESS_KEY_ID\"] = key\n        if secret: os.environ[\"AWS_SECRET_ACCESS_KEY\"] = secret\n        os.environ.setdefault(\"AWS_DEFAULT_REGION\", region)\n        os.environ.setdefault(\"AWS_S3_FORCE_PATH_STYLE\", \"true\")\n\n    _setup_env(mlflow_tracking_uri, s3_endpoint, aws_access_key_id, aws_secret_access_key)\n\n    model = joblib.load(model_in.path)\n    X_val = pd.read_csv(X_val_ds.path)\n    y_val = pd.read_csv(y_val_ds.path).iloc[:, 0].astype(int)\n\n    y_proba = model.predict_proba(X_val)[:, 1]\n    y_pred = (y_proba >= 0.5).astype(int)\n\n    metrics = {\n        \"auc\": float(roc_auc_score(y_val, y_proba)),\n        \"f1\": float(f1_score(y_val, y_pred)),\n        \"precision\": float(precision_score(y_val, y_pred)),\n        \"recall\": float(recall_score(y_val, y_pred)),\n        \"accuracy\": float(accuracy_score(y_val, y_pred)),\n    }\n\n    for k, v in metrics.items():\n        eval_metrics.log_metric(k, v)\n\n    with open(auc_value, \"w\") as f:\n        f.write(str(metrics[\"auc\"]))\n\n    mlflow.set_experiment(\"churn-kfp\")\n    with mlflow.start_run(run_name=\"evaluate_model\"):\n        mlflow.log_metrics(metrics)\n        mlflow.log_text(json.dumps(metrics, indent=2), artifact_file=\"metrics.json\")\n\n"
+          ],
+          "image": "python:3.10-slim"
+        }
+      },
+      "exec-ingest-synthetic": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "ingest_synthetic"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'numpy==1.26.4' 'scikit-learn==1.4.2' 'mlflow==2.14.1' 'boto3==1.34.162'  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.3' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef ingest_synthetic(\n    output_dataset: Output[Dataset],\n    mlflow_tracking_uri: str = \"\",\n    s3_endpoint: str = \"\",\n    aws_access_key_id: str = \"\",\n    aws_secret_access_key: str = \"\",\n    random_state: int = 42,\n    n_samples: int = 3000,\n    n_features: int = 20,\n    n_informative: int = 8,\n    class_sep: float = 1.2,\n):\n    import os, mlflow\n    import pandas as pd\n    from sklearn.datasets import make_classification\n\n    def _setup_env(tracking, s3, key, secret, region=\"us-east-1\"):\n        def clean(v): return v.strip() if isinstance(v, str) else v\n        tracking, s3, key, secret = map(clean, (tracking, s3, key, secret))\n        if tracking: os.environ[\"MLFLOW_TRACKING_URI\"] = tracking\n        if s3:\n            os.environ[\"MLFLOW_S3_ENDPOINT_URL\"] = s3\n            os.environ[\"AWS_ENDPOINT_URL_S3\"] = s3\n        if key:    os.environ[\"AWS_ACCESS_KEY_ID\"] = key\n        if secret: os.environ[\"AWS_SECRET_ACCESS_KEY\"] = secret\n        os.environ.setdefault(\"AWS_DEFAULT_REGION\", region)\n        os.environ.setdefault(\"AWS_S3_FORCE_PATH_STYLE\", \"true\")\n\n    _setup_env(mlflow_tracking_uri, s3_endpoint, aws_access_key_id, aws_secret_access_key)\n\n    X, y = make_classification(\n        n_samples=n_samples,\n        n_features=n_features,\n        n_informative=n_informative,\n        n_redundant=2,\n        n_repeated=0,\n        n_classes=2,\n        class_sep=class_sep,\n        random_state=random_state,\n    )\n    cols = [f\"f{i:02d}\" for i in range(n_features)]\n    df = pd.DataFrame(X, columns=cols)\n    df[\"churn\"] = y.astype(int)\n\n    import os\n    os.makedirs(os.path.dirname(output_dataset.path), exist_ok=True)\n    df.to_csv(output_dataset.path, index=False)\n\n    mlflow.set_experiment(\"churn-kfp\")\n    with mlflow.start_run(run_name=\"ingest_synthetic\"):\n        mlflow.log_params({\n            \"random_state\": random_state,\n            \"n_samples\": n_samples,\n            \"n_features\": n_features,\n            \"n_informative\": n_informative,\n            \"class_sep\": class_sep,\n        })\n        mlflow.log_text(df.head(3).to_csv(index=False), artifact_file=\"preview.csv\")\n\n"
+          ],
+          "image": "python:3.10-slim"
+        }
+      },
+      "exec-preprocess-split": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "preprocess_split"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'scikit-learn==1.4.2' 'mlflow==2.14.1' 'boto3==1.34.162'  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.3' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef preprocess_split(\n    raw_dataset: Input[Dataset],\n    X_train_ds: Output[Dataset],\n    X_val_ds: Output[Dataset],\n    y_train_ds: Output[Dataset],\n    y_val_ds: Output[Dataset],\n    mlflow_tracking_uri: str = \"\",\n    s3_endpoint: str = \"\",\n    aws_access_key_id: str = \"\",\n    aws_secret_access_key: str = \"\",\n    test_size: float = 0.2,\n    random_state: int = 42,\n):\n    import os, mlflow\n    import pandas as pd\n    from sklearn.model_selection import train_test_split\n\n    def _setup_env(tracking, s3, key, secret, region=\"us-east-1\"):\n        import os\n        def clean(v): return v.strip() if isinstance(v, str) else v\n        tracking, s3, key, secret = map(clean, (tracking, s3, key, secret))\n        if tracking: os.environ[\"MLFLOW_TRACKING_URI\"] = tracking\n        if s3:\n            os.environ[\"MLFLOW_S3_ENDPOINT_URL\"] = s3\n            os.environ[\"AWS_ENDPOINT_URL_S3\"] = s3\n        if key:    os.environ[\"AWS_ACCESS_KEY_ID\"] = key\n        if secret: os.environ[\"AWS_SECRET_ACCESS_KEY\"] = secret\n        os.environ.setdefault(\"AWS_DEFAULT_REGION\", region)\n        os.environ.setdefault(\"AWS_S3_FORCE_PATH_STYLE\", \"true\")\n\n    _setup_env(mlflow_tracking_uri, s3_endpoint, aws_access_key_id, aws_secret_access_key)\n\n    df = pd.read_csv(raw_dataset.path)\n    feature_cols = [c for c in df.columns if c != \"churn\"]\n    X = df[feature_cols]\n    y = df[\"churn\"].astype(int)\n\n    X_train, X_val, y_train, y_val = train_test_split(\n        X, y, test_size=test_size, random_state=random_state, stratify=y\n    )\n\n    os.makedirs(os.path.dirname(X_train_ds.path), exist_ok=True)\n    X_train.to_csv(X_train_ds.path, index=False)\n    X_val.to_csv(X_val_ds.path, index=False)\n    y_train.to_csv(y_train_ds.path, index=False, header=True)\n    y_val.to_csv(y_val_ds.path, index=False, header=True)\n\n    mlflow.set_experiment(\"churn-kfp\")\n    with mlflow.start_run(run_name=\"preprocess_split\"):\n        mlflow.log_params({\n            \"test_size\": test_size,\n            \"random_state\": random_state,\n            \"n_features\": X.shape[1],\n        })\n        mlflow.log_metrics({\n            \"train_rows\": float(len(X_train)),\n            \"val_rows\": float(len(X_val)),\n            \"class_balance_train\": float(y_train.mean()),\n            \"class_balance_val\": float(y_val.mean()),\n        })\n        mlflow.log_text(\"\\n\".join(feature_cols), artifact_file=\"feature_list.txt\")\n\n"
+          ],
+          "image": "python:3.10-slim"
+        }
+      },
+      "exec-train-model": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "train_model"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'numpy==1.26.4' 'scikit-learn==1.4.2' 'mlflow==2.14.1' 'joblib==1.3.2' 'boto3==1.34.162'  &&  python3 -m pip install --quiet --no-warn-script-location 'kfp==2.14.3' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef train_model(\n    X_train_ds: Input[Dataset],\n    y_train_ds: Input[Dataset],\n    model_out: Output[Model],\n    train_metrics: Output[Metrics],\n    mlflow_tracking_uri: str = \"\",\n    s3_endpoint: str = \"\",\n    aws_access_key_id: str = \"\",\n    aws_secret_access_key: str = \"\",\n    penalty: str = \"l2\",\n    C: float = 1.0,\n    max_iter: int = 500,\n    registered_model_name: str = \"churn-sklearn\",\n):\n    import os, joblib, mlflow, mlflow.sklearn\n    import pandas as pd\n    from sklearn.pipeline import Pipeline\n    from sklearn.preprocessing import StandardScaler\n    from sklearn.linear_model import LogisticRegression\n    from sklearn.metrics import roc_auc_score\n    from mlflow.models.signature import infer_signature\n\n    def _setup_env(tracking, s3, key, secret, region=\"us-east-1\"):\n        import os\n        def clean(v): return v.strip() if isinstance(v, str) else v\n        tracking, s3, key, secret = map(clean, (tracking, s3, key, secret))\n        if tracking: os.environ[\"MLFLOW_TRACKING_URI\"] = tracking\n        if s3:\n            os.environ[\"MLFLOW_S3_ENDPOINT_URL\"] = s3\n            os.environ[\"AWS_ENDPOINT_URL_S3\"] = s3\n        if key:    os.environ[\"AWS_ACCESS_KEY_ID\"] = key\n        if secret: os.environ[\"AWS_SECRET_ACCESS_KEY\"] = secret\n        os.environ.setdefault(\"AWS_DEFAULT_REGION\", region)\n        os.environ.setdefault(\"AWS_S3_FORCE_PATH_STYLE\", \"true\")\n\n    _setup_env(mlflow_tracking_uri, s3_endpoint, aws_access_key_id, aws_secret_access_key)\n\n    X_train = pd.read_csv(X_train_ds.path)\n    y_train = pd.read_csv(y_train_ds.path).iloc[:, 0].astype(int)\n\n    pipe = Pipeline([\n        (\"scaler\", StandardScaler()),\n        (\"clf\", LogisticRegression(penalty=penalty, C=C, max_iter=max_iter, solver=\"lbfgs\")),\n    ])\n    pipe.fit(X_train, y_train)\n\n    auc_train = float(roc_auc_score(y_train, pipe.predict_proba(X_train)[:, 1]))\n\n    os.makedirs(os.path.dirname(model_out.path), exist_ok=True)\n    joblib.dump(pipe, model_out.path)\n\n    train_metrics.log_metric(\"auc_train\", auc_train)\n\n    mlflow.set_experiment(\"churn-kfp\")\n    with mlflow.start_run(run_name=\"train_model\"):\n        mlflow.log_params({\"penalty\": penalty, \"C\": C, \"max_iter\": max_iter})\n        mlflow.log_metrics({\"auc_train\": auc_train})\n        signature = infer_signature(\n            X_train.head(32), pipe.predict_proba(X_train.head(32))[:, 1]\n        )\n        mlflow.sklearn.log_model(\n            sk_model=pipe,\n            artifact_path=\"model\",\n            signature=signature,\n            input_example=X_train.head(3),\n            registered_model_name=registered_model_name,\n        )\n\n"
+          ],
+          "image": "python:3.10-slim"
+        }
+      }
+    }
+  },
+  "pipelineInfo": {
+    "name": "churn-mlops-pipeline-1-0"
+  },
+  "root": {
+    "dag": {
+      "tasks": {
+        "decide-promotion": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-decide-promotion"
+          },
+          "dependentTasks": [
+            "evaluate-model"
+          ],
+          "inputs": {
+            "parameters": {
+              "auc_value": {
+                "taskOutputParameter": {
+                  "outputParameterKey": "auc_value",
+                  "producerTask": "evaluate-model"
+                }
+              },
+              "threshold": {
+                "componentInputParameter": "auc_threshold"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "decide-promotion"
+          }
+        },
+        "evaluate-model": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-evaluate-model"
+          },
+          "dependentTasks": [
+            "preprocess-split",
+            "train-model"
+          ],
+          "inputs": {
+            "artifacts": {
+              "X_val_ds": {
+                "taskOutputArtifact": {
+                  "outputArtifactKey": "X_val_ds",
+                  "producerTask": "preprocess-split"
+                }
+              },
+              "model_in": {
+                "taskOutputArtifact": {
+                  "outputArtifactKey": "model_out",
+                  "producerTask": "train-model"
+                }
+              },
+              "y_val_ds": {
+                "taskOutputArtifact": {
+                  "outputArtifactKey": "y_val_ds",
+                  "producerTask": "preprocess-split"
+                }
+              }
+            },
+            "parameters": {
+              "aws_access_key_id": {
+                "componentInputParameter": "aws_access_key_id"
+              },
+              "aws_secret_access_key": {
+                "componentInputParameter": "aws_secret_access_key"
+              },
+              "mlflow_tracking_uri": {
+                "componentInputParameter": "mlflow_tracking_uri"
+              },
+              "s3_endpoint": {
+                "componentInputParameter": "s3_endpoint"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "evaluate-model"
+          }
+        },
+        "ingest-synthetic": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-ingest-synthetic"
+          },
+          "inputs": {
+            "parameters": {
+              "aws_access_key_id": {
+                "componentInputParameter": "aws_access_key_id"
+              },
+              "aws_secret_access_key": {
+                "componentInputParameter": "aws_secret_access_key"
+              },
+              "mlflow_tracking_uri": {
+                "componentInputParameter": "mlflow_tracking_uri"
+              },
+              "s3_endpoint": {
+                "componentInputParameter": "s3_endpoint"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "ingest-synthetic"
+          }
+        },
+        "preprocess-split": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-preprocess-split"
+          },
+          "dependentTasks": [
+            "ingest-synthetic"
+          ],
+          "inputs": {
+            "artifacts": {
+              "raw_dataset": {
+                "taskOutputArtifact": {
+                  "outputArtifactKey": "output_dataset",
+                  "producerTask": "ingest-synthetic"
+                }
+              }
+            },
+            "parameters": {
+              "aws_access_key_id": {
+                "componentInputParameter": "aws_access_key_id"
+              },
+              "aws_secret_access_key": {
+                "componentInputParameter": "aws_secret_access_key"
+              },
+              "mlflow_tracking_uri": {
+                "componentInputParameter": "mlflow_tracking_uri"
+              },
+              "s3_endpoint": {
+                "componentInputParameter": "s3_endpoint"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "preprocess-split"
+          }
+        },
+        "train-model": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-train-model"
+          },
+          "dependentTasks": [
+            "preprocess-split"
+          ],
+          "inputs": {
+            "artifacts": {
+              "X_train_ds": {
+                "taskOutputArtifact": {
+                  "outputArtifactKey": "X_train_ds",
+                  "producerTask": "preprocess-split"
+                }
+              },
+              "y_train_ds": {
+                "taskOutputArtifact": {
+                  "outputArtifactKey": "y_train_ds",
+                  "producerTask": "preprocess-split"
+                }
+              }
+            },
+            "parameters": {
+              "aws_access_key_id": {
+                "componentInputParameter": "aws_access_key_id"
+              },
+              "aws_secret_access_key": {
+                "componentInputParameter": "aws_secret_access_key"
+              },
+              "mlflow_tracking_uri": {
+                "componentInputParameter": "mlflow_tracking_uri"
+              },
+              "s3_endpoint": {
+                "componentInputParameter": "s3_endpoint"
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "train-model"
+          }
+        }
+      }
+    },
+    "inputDefinitions": {
+      "parameters": {
+        "auc_threshold": {
+          "defaultValue": 0.7,
+          "isOptional": true,
+          "parameterType": "NUMBER_DOUBLE"
+        },
+        "aws_access_key_id": {
+          "defaultValue": "admin",
+          "isOptional": true,
+          "parameterType": "STRING"
+        },
+        "aws_secret_access_key": {
+          "defaultValue": "admin123",
+          "isOptional": true,
+          "parameterType": "STRING"
+        },
+        "mlflow_tracking_uri": {
+          "defaultValue": "http://mlflow.kflow-mlops.svc.cluster.local:5000",
+          "isOptional": true,
+          "parameterType": "STRING"
+        },
+        "s3_endpoint": {
+          "defaultValue": "http://minio.kflow-mlops.svc.cluster.local:9000",
+          "isOptional": true,
+          "parameterType": "STRING"
+        }
+      }
+    }
+  },
+  "schemaVersion": "2.1.0",
+  "sdkVersion": "kfp-2.14.3"
+}

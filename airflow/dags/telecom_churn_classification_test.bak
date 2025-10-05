@@ -1,0 +1,17 @@
+from airflow import DAG
+from airflow.operators.empty import EmptyOperator
+from datetime import datetime
+
+default_args = {
+    'owner': 'airflow',
+    'start_date': datetime(2025, 5, 1),
+}
+
+dag = DAG(
+    dag_id='telecom_churn_classification',
+    default_args=default_args,
+    schedule='@daily'  # changed from schedule_interval
+)
+
+start = EmptyOperator(task_id='start', dag=dag)
+

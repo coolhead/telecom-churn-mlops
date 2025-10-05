@@ -1,0 +1,6 @@
+[2025-05-06T01:03:15.132+0000] {scheduler_job_runner.py:989} INFO - Starting the scheduler
+[2025-05-06T01:03:15.133+0000] {executor_loader.py:269} INFO - Loaded executor: :LocalExecutor:
+[2025-05-06T01:03:15.135+0000] {scheduler_job_runner.py:2128} INFO - Adopting or resetting orphaned tasks for active dag runs
+[2025-05-06T01:04:37.587+0000] {scheduler_job_runner.py:287} INFO - Exiting gracefully upon receiving signal 15
+[2025-05-06T01:04:37.589+0000] {local_executor.py:216} INFO - Shutting down LocalExecutor; waiting for running tasks to finish.  Signal again if you don't want to wait.
+[2025-05-06T01:04:37.589+0000] {scheduler_job_runner.py:1031} INFO - Exited execute loop

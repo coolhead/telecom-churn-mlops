@@ -1,0 +1,6 @@
+artifact_location: file:///home/raghu/mlflow-churn/mlruns/425280419736979120
+creation_time: 1758941803860
+experiment_id: '425280419736979120'
+last_update_time: 1758941803860
+lifecycle_stage: active
+name: Anomaly Detection

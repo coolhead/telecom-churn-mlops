@@ -1,0 +1,195 @@
+{
+  "components": {
+    "comp-data-validation-op": {
+      "executorLabel": "exec-data-validation-op",
+      "outputDefinitions": {
+        "parameters": {
+          "Output": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    },
+    "comp-drift-check-op": {
+      "executorLabel": "exec-drift-check-op",
+      "inputDefinitions": {
+        "parameters": {
+          "csv_path": {
+            "parameterType": "STRING"
+          },
+          "run_id": {
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "parameters": {
+          "Output": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    },
+    "comp-train-and-log-op": {
+      "executorLabel": "exec-train-and-log-op",
+      "inputDefinitions": {
+        "parameters": {
+          "csv_path": {
+            "parameterType": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "parameters": {
+          "model_uri": {
+            "parameterType": "STRING"
+          },
+          "run_id": {
+            "parameterType": "STRING"
+          }
+        }
+      }
+    }
+  },
+  "deploymentSpec": {
+    "executors": {
+      "exec-data-validation-op": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "data_validation_op"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&  python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'great_expectations==0.18.12' 'scikit-learn==1.5.1' 'numpy==1.26.4' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef data_validation_op() -> str:\n    \"\"\"\n    Creates a small synthetic 'churn' dataset and validates a simple data contract.\n    On failure, raises -> pipeline stops.\n    Returns the CSV path for downstream steps.\n    \"\"\"\n    import pandas as pd\n    from sklearn.datasets import make_classification\n    import great_expectations as gx\n    import os, json, tempfile\n\n    X, y = make_classification(\n        n_samples=1500, n_features=10, n_informative=6, random_state=42\n    )\n    cols = [f\"f{i}\" for i in range(10)]\n    df = pd.DataFrame(X, columns=cols)\n    df[\"churn\"] = y\n\n    out_dir = tempfile.mkdtemp()\n    csv_path = os.path.join(out_dir, \"train.csv\")\n    df.to_csv(csv_path, index=False)\n\n    # GE in-memory checkpoint with minimal expectations (column set + ranges)\n    context = gx.get_context(mode=\"ephemeral\")\n    ds = context.sources.add_pandas(csv_path, name=\"train_df\")\n    ge_ds = ds.add_dataframe_asset(name=\"train_asset\")\n    batch = ge_ds.get_batch()\n\n    # Expectations\n    suite = context.add_expectation_suite(\"churn_contract\")\n    batch.expect_table_columns_to_match_set(set(cols + [\"churn\"]))\n    for c in cols:\n        batch.expect_column_values_to_not_be_null(c)\n        batch.expect_column_median_to_be_between(c, min_value=-10, max_value=10)\n    batch.expect_column_values_to_be_in_set(\"churn\", [0, 1])\n\n    results = context.assistants.validation.run(\n        batch=batch, expectation_suite=suite, run_name=\"contract_check\"\n    )\n    if not results[\"success\"]:\n        raise ValueError(\"Data contract failed: \" + json.dumps(results, default=str))\n\n    return csv_path\n\n"
+          ],
+          "image": "python:3.11-slim"
+        }
+      },
+      "exec-drift-check-op": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "drift_check_op"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&  python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'mlflow==2.14.1' 'evidently==0.4.15' 'scikit-learn==1.5.1' 'numpy==1.26.4' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef drift_check_op(csv_path: str, run_id: str) -> str:\n    \"\"\"\n    Generates an Evidently data drift HTML and logs it to MLflow artifacts under the same run.\n    Returns path to the HTML file (for viewer components if needed).\n    \"\"\"\n    import os, pandas as pd, tempfile, mlflow\n    from evidently.report import Report\n    from evidently.metric_preset import DataDriftPreset\n\n    os.environ[\"MLFLOW_TRACKING_URI\"] = MLFLOW_URI\n\n    df = pd.read_csv(csv_path)\n    # Simulate \"current\" data by nudging a couple features\n    current = df.copy()\n    for c in [\"f0\", \"f1\"]:\n        current[c] = current[c] * 1.1 + 0.1\n\n    report = Report(metrics=[DataDriftPreset()])\n    report.run(\n        reference_data=df.drop(columns=[\"churn\"]),\n        current_data=current.drop(columns=[\"churn\"]),\n    )\n\n    tmp = tempfile.mkdtemp()\n    html_path = os.path.join(tmp, \"drift_report.html\")\n    report.save_html(html_path)\n\n    # Attach the report to the same MLflow run\n    with mlflow.start_run(run_id=run_id, nested=True):\n        mlflow.log_artifact(html_path, artifact_path=\"evidently\")\n\n    return html_path\n\n"
+          ],
+          "image": "python:3.11-slim"
+        }
+      },
+      "exec-train-and-log-op": {
+        "container": {
+          "args": [
+            "--executor_input",
+            "{{$}}",
+            "--function_to_execute",
+            "train_and_log_op"
+          ],
+          "command": [
+            "sh",
+            "-c",
+            "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location 'kfp==2.4.0' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&  python3 -m pip install --quiet --no-warn-script-location 'pandas==2.2.2' 'mlflow==2.14.1' 'scikit-learn==1.5.1' 'xgboost==2.1.1' 'numpy==1.26.4' && \"$0\" \"$@\"\n",
+            "sh",
+            "-ec",
+            "program_path=$(mktemp -d)\n\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\n_KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+            "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import *\n\ndef train_and_log_op(csv_path: str) -> NamedTuple(\"Outputs\", [(\"run_id\", str), (\"model_uri\", str)]):\n    \"\"\"\n    Trains XGBoost, logs to MLflow, returns (run_id, model_uri).\n    \"\"\"\n    import os, pandas as pd, mlflow\n    from sklearn.model_selection import train_test_split\n    from sklearn.metrics import roc_auc_score\n    from xgboost import XGBClassifier\n\n    os.environ[\"MLFLOW_TRACKING_URI\"] = MLFLOW_URI\n\n    df = pd.read_csv(csv_path)\n    X = df.drop(columns=[\"churn\"])\n    y = df[\"churn\"]\n\n    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=7)\n\n    with mlflow.start_run(run_name=\"xgb_churn\") as run:\n        params = dict(\n            n_estimators=200,\n            max_depth=6,\n            learning_rate=0.1,\n            subsample=0.9,\n            colsample_bytree=0.9,\n            eval_metric=\"auc\",\n        )\n        model = XGBClassifier(**params)\n        model.fit(X_tr, y_tr)\n        y_proba = model.predict_proba(X_te)[:, 1]\n        auc = roc_auc_score(y_te, y_proba)\n\n        mlflow.log_params(params)\n        mlflow.log_metric(\"roc_auc\", float(auc))\n        mlflow.log_metric(\"n_test\", int(len(y_te)))\n\n        # Log model\n        mlflow.xgboost.log_model(model, artifact_path=\"model\")\n        model_uri = mlflow.get_artifact_uri(\"model\")\n\n        # Try registering (ok if registry not enabled in local demo)\n        try:\n            mlflow.register_model(model_uri, \"churn_xgb\")\n        except Exception:\n            pass\n\n        return (run.info.run_id, model_uri)\n\n"
+          ],
+          "image": "python:3.11-slim"
+        }
+      }
+    }
+  },
+  "pipelineInfo": {
+    "name": "churn-mlops-pipeline"
+  },
+  "root": {
+    "dag": {
+      "tasks": {
+        "data-validation-op": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-data-validation-op"
+          },
+          "taskInfo": {
+            "name": "data-validation-op"
+          }
+        },
+        "drift-check-op": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-drift-check-op"
+          },
+          "dependentTasks": [
+            "data-validation-op",
+            "train-and-log-op"
+          ],
+          "inputs": {
+            "parameters": {
+              "csv_path": {
+                "taskOutputParameter": {
+                  "outputParameterKey": "Output",
+                  "producerTask": "data-validation-op"
+                }
+              },
+              "run_id": {
+                "taskOutputParameter": {
+                  "outputParameterKey": "run_id",
+                  "producerTask": "train-and-log-op"
+                }
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "drift-check-op"
+          }
+        },
+        "train-and-log-op": {
+          "cachingOptions": {
+            "enableCache": true
+          },
+          "componentRef": {
+            "name": "comp-train-and-log-op"
+          },
+          "dependentTasks": [
+            "data-validation-op"
+          ],
+          "inputs": {
+            "parameters": {
+              "csv_path": {
+                "taskOutputParameter": {
+                  "outputParameterKey": "Output",
+                  "producerTask": "data-validation-op"
+                }
+              }
+            }
+          },
+          "taskInfo": {
+            "name": "train-and-log-op"
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "2.1.0",
+  "sdkVersion": "kfp-2.4.0"
+}

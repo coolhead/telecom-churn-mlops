@@ -1,0 +1,11 @@
+{"timestamp":"2025-05-08T13:33:30.566034","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:34:00.894027","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:34:31.191108","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:35:01.524715","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:35:31.795181","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:36:02.071351","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:39:32.323164","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:40:02.759042","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:40:33.190497","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:41:03.578421","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-05-08T13:41:33.977145","level":"info","event":"Filling up the DagBag from /home/raghu/airflow/dags/telecom_churn_classification_test.py","logger":"airflow.models.dagbag.DagBag"}
